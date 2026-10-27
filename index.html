@@ -1,1 +1,295 @@
 
+npx create-react-app myapp
+cd myapp
+npm start
+
+git config --global user.name "Keerthi Machanooru"
+git config --global user.email "YOUR_GITHUB_EMAIL"
+
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/Keerthimk24/git.git
+git push -u origin main
+
+git checkout -b feature/navbar
+git add Navbar.js
+git commit -m "Add navbar"
+git push origin feature/navbar
+
+git checkout feature/navbar
+git rm Navbar.js
+git commit -m "Remove Navbar.js"
+git push origin feature/navbar
+
+git checkout main
+git checkout -b feature/form
+git checkout feature/form
+git add StudentForm.js
+git commit -m "Add student form"
+git push origin feature/form
+
+git branch
+git branch
+git status
+
+import React, { useState } from "react";
+
+function App() {
+  const [data, setData] = useState({
+    name: "", roll: "", branch: "", event: "", email: ""
+  });
+
+  const change = e =>
+    setData({ ...data, [e.target.name]: e.target.value });
+
+  const submit = e => {
+    e.preventDefault();
+    alert("Registration Successful!");
+    setData({ name: "", roll: "", branch: "", event: "", email: "" });
+  };
+
+  return (
+    <div>
+      <h2>College Events</h2>
+      <p>Technical Fest</p>
+      <p>Cultural Fest</p>
+      <p>Sports Meet</p>
+
+      <h3>Event Registration</h3>
+
+      <form onSubmit={submit}>
+        <input name="name" placeholder="Student Name" value={data.name} onChange={change} required /><br />
+        <input name="roll" placeholder="Roll Number" value={data.roll} onChange={change} required /><br />
+        <input name="branch" placeholder="Branch" value={data.branch} onChange={change} required /><br />
+        <input name="event" placeholder="Event Name" value={data.event} onChange={change} required /><br />
+        <input name="email" type="email" placeholder="Email" value={data.email} onChange={change} required /><br />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  );
+}
+
+export default App;
+
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #f2f2f2;
+}
+
+input {
+  padding: 8px;
+  margin: 6px;
+}
+
+button {
+  padding: 8px 20px;
+  background: blue;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
+import React, { useState } from "react";
+
+function App() {
+  const [name, setName] = useState("");
+  const [marks, setMarks] = useState(["", "", "", "", ""]);
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+  const [edit, setEdit] = useState(-1);
+
+  const submit = e => {
+    e.preventDefault();
+    const total = marks.reduce((a, b) => a + Number(b), 0);
+    const percent = total / 5;
+    const grade = percent >= 90 ? "A" : percent >= 75 ? "B" : percent >= 50 ? "C" : "F";
+    const s = { name, total, percent, grade, marks };
+
+    if (edit >= 0) {
+      setData(data.map((x, i) => i === edit ? s : x));
+      setEdit(-1);
+    } else {
+      setData([...data, s]);
+    }
+
+    setName("");
+    setMarks(["", "", "", "", ""]);
+  };
+
+  const change = i => {
+    setName(data[i].name);
+    setMarks(data[i].marks);
+    setEdit(i);
+  };
+
+  return (
+    <div>
+      <h2>STUDENT RESULT MANAGEMENT</h2>
+
+      <form onSubmit={submit}>
+        <input placeholder="Student Name" value={name}
+          onChange={e => setName(e.target.value)} required /><br />
+
+        {marks.map((m, i) => (
+          <input key={i} type="number" min="0" max="100"
+            placeholder={`Subject ${i + 1}`} value={m} required
+            onChange={e => setMarks(marks.map((v, j) =>
+              i === j ? e.target.value : v))} />
+        ))}
+
+        <br /><button>{edit >= 0 ? "Update Result" : "Add Result"}</button>
+      </form>
+
+      <input placeholder="Search Student"
+        onChange={e => setSearch(e.target.value)} />
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Name</th><th>Total</th><th>Percentage</th>
+            <th>Grade</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.filter(s => s.name.toLowerCase().includes(search.toLowerCase()))
+            .map((s, i) => (
+              <tr key={i}>
+                <td>{s.name}</td><td>{s.total}/500</td>
+                <td>{s.percent}%</td><td>{s.grade}</td>
+                <td>
+                  <button onClick={() => change(i)}>Edit</button>
+                  <button onClick={() => setData(data.filter((_, j) => j !== i))}>Delete</button>
+                  <button onClick={() => window.print()}>Print</button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #f2f2f2;
+}
+
+input {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  padding: 8px;
+  margin: 4px;
+  cursor: pointer;
+}
+
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 8px;
+}
+
+import React, { useState } from "react";
+
+function App() {
+  const [s, setS] = useState({
+    roll: "", name: "", email: "", branch: "", mobile: ""
+  });
+  const [data, setData] = useState([]);
+
+  const change = e =>
+    setS({ ...s, [e.target.name]: e.target.value });
+
+  const submit = e => {
+    e.preventDefault();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email) ||
+        !/^\d{10}$/.test(s.mobile)) {
+      alert("Invalid email or mobile number");
+      return;
+    }
+
+    setData([...data, s]);
+    setS({ roll: "", name: "", email: "", branch: "", mobile: "" });
+  };
+
+  return (
+    <div>
+      <h2>Student Registration</h2>
+
+      <form onSubmit={submit}>
+        <input name="roll" placeholder="Roll Number" value={s.roll} onChange={change} required /><br />
+        <input name="name" placeholder="Name" value={s.name} onChange={change} required /><br />
+        <input name="email" placeholder="Email" value={s.email} onChange={change} required /><br />
+        <input name="branch" placeholder="Branch" value={s.branch} onChange={change} required /><br />
+        <input name="mobile" placeholder="Mobile Number" value={s.mobile} onChange={change} required /><br />
+        <button type="submit">Register</button>
+      </form>
+
+      <h3>Student Details</h3>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Roll</th><th>Name</th><th>Email</th><th>Branch</th><th>Mobile</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((x, i) => (
+            <tr key={i}>
+              <td>{x.roll}</td><td>{x.name}</td><td>{x.email}</td>
+              <td>{x.branch}</td><td>{x.mobile}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #f2f2f2;
+}
+
+input {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  padding: 8px 20px;
+  background: blue;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 8px;
+}
+
+
+
